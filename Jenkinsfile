@@ -1,18 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:20'   // Use the Node.js Docker image
+            args '-u root'    // Run as root to have proper permissions
+        }
+    }
     stages {
         stage('Checkout') {
             steps {
                 git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
-            }
-        }
-        stage('Install Node.js') {
-            steps {
-                sh '''
-                curl -sL https://deb.nodesource.com/setup_20.x | bash -
-                apt-get update
-                apt-get install -y nodejs
-                '''
             }
         }
         stage('Install Dependencies') {
