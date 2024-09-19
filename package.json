@@ -1,12 +1,14 @@
 {
-  "name": "docker-jenkins-exercise",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "dependencies": {
+    "cross-env": "^7.0.3"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "test": "npx mocha test/loginTest.js"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
+    "playwright": "^1.47.1"
+  },
+  "type": "module"
 }
