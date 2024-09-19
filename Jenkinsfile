@@ -1,35 +1,30 @@
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from your Git repository
-                git branch: 'master', url: 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
+                git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
             }
         }
-
+        stage('Install Node.js') {
+            steps {
+                sh 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -'
+                sh 'sudo apt-get install -y nodejs'
+            }
+        }
         stage('Install Dependencies') {
             steps {
-                // Install Node.js dependencies
                 sh 'npm install'
             }
         }
-
         stage('Run Tests') {
             steps {
-                // Run your Mocha tests
-                sh 'npx mocha test/loginTest.js'
+                sh 'npm test'
             }
         }
     }
-
     post {
         always {
-            // Archive test reports (if any)
-            archiveArtifacts artifacts: '**/test-results.xml', allowEmptyArchive: true
-
-            // Clean up after the build
             cleanWs()
         }
     }
