@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from your Git repository
-                git branch: 'main', url: 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
+                git branch: 'master', url: 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
             }
         }
 
