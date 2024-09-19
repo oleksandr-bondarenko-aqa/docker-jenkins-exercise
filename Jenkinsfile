@@ -1,15 +1,13 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:14'
+        }
+    }
     stages {
         stage('Checkout') {
             steps {
                 git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
-            }
-        }
-        stage('Install Node.js') {
-            steps {
-                sh 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -'
-                sh 'sudo apt-get install -y nodejs'
             }
         }
         stage('Install Dependencies') {
