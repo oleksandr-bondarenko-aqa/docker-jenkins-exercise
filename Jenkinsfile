@@ -14,7 +14,8 @@ pipeline {
                 sh 'npm install'
                 sh 'npm install mocha'
                 sh 'chmod +x ./node_modules/.bin/mocha'
-                sh 'npx playwright install'  // Install Playwright browsers
+                sh 'chmod +x ./node_modules/.bin/playwright'  // Ensure playwright binaries are executable
+                sh 'npx playwright install'
             }
         }
         stage('Run Tests') {
