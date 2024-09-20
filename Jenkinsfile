@@ -15,8 +15,7 @@ pipeline {
                 sh 'npm install mocha'
                 sh 'chmod +x ./node_modules/.bin/mocha'
                 sh 'chmod +x ./node_modules/.bin/playwright'
-                sh 'npx playwright install-deps'  // Install Playwright dependencies
-                sh 'npx playwright install'
+                sh 'npx playwright install --with-deps'  // Use --with-deps to install without sudo
             }
         }
         stage('Run Tests') {
