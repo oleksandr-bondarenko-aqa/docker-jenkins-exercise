@@ -13,18 +13,11 @@ pipeline {
             steps {
                 sh 'npm install'
                 sh 'npm install mocha'
-                sh 'chmod +x ./node_modules/.bin/mocha'  // Ensure Mocha is executable
+                sh 'chmod +x ./node_modules/.bin/mocha'
+                sh 'npx playwright install'  // Install Playwright browsers
             }
         }
         stage('Run Tests') {
             steps {
                 sh './node_modules/.bin/mocha test/loginTest.js'  // Explicitly run mocha
-            }
-        }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
+
