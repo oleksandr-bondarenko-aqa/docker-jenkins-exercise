@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'Node_22'  // Updated NodeJS version to Node_22
+        nodejs 'Node_22'  // Specify NodeJS version
     }
     stages {
         stage('Checkout') {
@@ -13,3 +13,9 @@ pipeline {
             steps {
                 sh 'npm install'
                 sh 'npm install mocha'
+                sh 'chmod +x ./node_modules/.bin/mocha'  // Ensure Mocha is executable
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh './
