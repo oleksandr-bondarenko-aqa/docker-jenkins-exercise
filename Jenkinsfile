@@ -6,14 +6,20 @@ pipeline {
                 git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
             }
         }
-        stage('Build and Test with Docker') {
+        stage('Install Node.js') {
             steps {
-                script {
-                    docker.image('node:20').inside {
-                        sh 'npm install'
-                        sh 'npm test'
-                    }
-                }
+                sh 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -'
+                sh 'sudo apt-get install -y nodejs'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
             }
         }
     }
