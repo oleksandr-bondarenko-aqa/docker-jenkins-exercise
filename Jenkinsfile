@@ -1,4 +1,3 @@
-node('node20')
 pipeline {
     agent any
     stages {
