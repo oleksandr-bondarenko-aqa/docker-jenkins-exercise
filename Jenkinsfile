@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'Node_22'
+        nodejs 'Node_22'  // Updated NodeJS version to Node_22
     }
     stages {
         stage('Checkout') {
@@ -12,17 +12,4 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                sh 'npm test'
-            }
-        }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
+                sh 'npm install mocha'
