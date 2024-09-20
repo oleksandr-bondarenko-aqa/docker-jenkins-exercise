@@ -20,4 +20,12 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh './node_modules/.bin/mocha test/loginTest.js'  // Explicitly run mocha
-
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
