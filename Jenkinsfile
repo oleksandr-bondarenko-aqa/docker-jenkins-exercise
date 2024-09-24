@@ -12,6 +12,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
+                sh 'npm install playwright'
+                sh 'chmod +x ./node_modules/.bin/playwright'
                 sh 'npx playwright install'
             }
         }
