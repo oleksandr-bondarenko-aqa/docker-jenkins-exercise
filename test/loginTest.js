@@ -9,9 +9,10 @@ describe('Login Page Test', function() {
     this.timeout(10000);
 
     // Before hook to launch the browser
-    before(async function() {
-        browser = await chromium.launch({ headless: false }); // Set to true for headless mode
-        page = await browser.newPage();
+    before(async () => {
+        browser = await chromium.launch({ headless: true });
+        const context = await browser.newContext();
+        page = await context.newPage();
     });
 
     // After hook to close the browser if it was initialized
