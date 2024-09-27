@@ -4,6 +4,11 @@ pipeline {
         nodejs 'Node_18' // Use a stable NodeJS version
     }
     stages {
+        stage('Cleanup') {
+            steps {
+                sh 'rm -rf node_modules package-lock.json'
+            }
+        }
         stage('Checkout') {
             steps {
                 git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
@@ -36,8 +41,8 @@ pipeline {
                         ]
                         // Convert the config Map to JSON string
                         def jsonConfig = groovy.json.JsonOutput.toJson(config)
-                        // Write the JSON string to reportportal.conf.json
-                        writeFile file: 'reportportal.conf.json', text: jsonConfig
+                        // Write the JSON string to reportportal.config.json
+                        writeFile file: 'reportportal.config.json', text: jsonConfig
                     }
                 }
             }
@@ -45,12 +50,14 @@ pipeline {
         stage('Run Tests') {
             steps {
                 withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
-                    withEnv(["RP_CONFIG_FILE=reportportal.conf.json", "RP_API_KEY=${RP_API_KEY}"]) {
-                        sh '''
-                        set -e
-                        npx mocha --reporter @reportportal/agent-js-mocha test/loginTest.js
-                        '''
+                    script {
+                        env.RP_CONFIG_FILE = './reportportal.config.json'
+                        env.RP_API_KEY = RP_API_KEY
                     }
+                    sh '''
+                    set -e
+                    npx mocha --reporter @reportportal/agent-js-mocha test/loginTest.js
+                    '''
                 }
             }
         }
