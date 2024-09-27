@@ -1,4 +1,6 @@
 {
+  "endpoint": "http://192.168.0.108:8081/api/v1",
+  "project": "superadmin_personal",
   "launch": "Playwright Test Run",
   "description": "Playwright tests",
   "attributes": [
