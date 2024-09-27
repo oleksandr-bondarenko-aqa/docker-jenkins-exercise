@@ -1,5 +1,5 @@
 {
-  "token": "alex-rp-api-key_Di3xvfVHRXSbKgHv6tIQkcraivi_HXI9RfObVp7WYmYsVZr_mrNxCC5ou_JRM1ci",
+  "token": "${REPORT_PORTAL_TOKEN}",
   "endpoint": "http://192.168.0.108:8081/api/v1",
   "launch": "Playwright Test Run",
   "project": "docker-jenkins-exercise",

@@ -1,14 +1,15 @@
 {
   "dependencies": {
-    "cross-env": "^7.0.3",
-    "playwright": "^1.47.1",
     "chai": "^5.1.1",
-    "mocha": "^10.7.3"
+    "cross-env": "^7.0.3",
+    "mocha": "^10.7.3",
+    "playwright": "^1.47.1"
   },
   "scripts": {
     "test": "npx mocha test/loginTest.js"
   },
   "devDependencies": {
+    "@reportportal/agent-js-mocha": "^5.1.0",
     "chai": "^5.1.1",
     "mocha": "^10.7.3",
     "playwright": "^1.47.1"
