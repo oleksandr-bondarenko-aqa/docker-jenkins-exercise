@@ -12,7 +12,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install playwright mocha @reportportal/agent-js-mocha@5.0.5'
+                sh 'npm install playwright mocha @reportportal/agent-js-mocha'
                 sh 'chmod +x ./node_modules/.bin/*'
                 sh 'npx playwright install-deps'
                 sh 'npx playwright install'
