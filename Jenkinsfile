@@ -47,11 +47,12 @@ pipeline {
                     sh 'echo "RP_API_KEY is set"'
                     // Print non-sensitive environment variables
                     sh 'env | grep RP_ | grep -v RP_API_KEY || true'
-                    // Run the tests with set -e
+                    // Run the tests with properly quoted path
                     sh '''
                     set -e
+                    CONFIG_FILE="$(pwd)/reportportal.conf.json"
                     npx mocha --reporter @reportportal/agent-js-mocha --reporter-options \
-                    "configFile=$(pwd)/reportportal.conf.json,apiKey=${RP_API_KEY}" test/loginTest.js
+                    "configFile=\\"$CONFIG_FILE\\",apiKey=${RP_API_KEY}" test/loginTest.js
                     '''
                 }
             }
