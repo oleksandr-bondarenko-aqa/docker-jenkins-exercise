@@ -3,6 +3,7 @@
   "project": "superadmin_personal",
   "launch": "Playwright Test Run",
   "description": "Playwright tests",
+  "apiKey": "reportportal-token_cBlWt59jQKehmdRxx7hTmJg8UyiewM_e0fQOD-lNqt7HoLHhpFi9Xnyl41UwPP0A",
   "attributes": [
     {
       "key": "platform",

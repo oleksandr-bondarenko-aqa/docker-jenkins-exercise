@@ -12,8 +12,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                // Use the latest available version or specify a valid version
-                sh 'npm install playwright mocha @reportportal/agent-js-mocha@5.0.4'
+                sh 'npm install playwright mocha @reportportal/agent-js-mocha@5.0.3 @reportportal/client-javascript@5.0.3'
                 sh 'chmod +x ./node_modules/.bin/*'
                 sh 'npx playwright install-deps'
                 sh 'npx playwright install'
@@ -35,17 +34,24 @@ pipeline {
                             mode: 'DEFAULT',
                             debug: true
                         ]
-                        writeJSON file: 'reportportal.conf.json', json: config
+                        // Convert the config Map to JSON string
+                        def jsonConfig = groovy.json.JsonOutput.toJson(config)
+                        // Write the JSON string to reportportal.conf.json
+                        writeFile file: 'reportportal.conf.json', text: jsonConfig
                     }
                 }
             }
         }
         stage('Run Tests') {
             steps {
-                sh '''
-                set -e
-                npx mocha --reporter @reportportal/agent-js-mocha test/loginTest.js
-                '''
+                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
+                    withEnv(["RP_CONFIG_FILE=reportportal.conf.json", "RP_API_KEY=${RP_API_KEY}"]) {
+                        sh '''
+                        set -e
+                        npx mocha --reporter @reportportal/agent-js-mocha test/loginTest.js
+                        '''
+                    }
+                }
             }
         }
     }
