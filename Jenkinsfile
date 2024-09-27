@@ -12,36 +12,42 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install playwright mocha @reportportal/agent-js-mocha@5.0.3'
+                sh 'npm install playwright mocha @reportportal/agent-js-mocha@5.0.5'
                 sh 'chmod +x ./node_modules/.bin/*'
                 sh 'npx playwright install-deps'
                 sh 'npx playwright install'
             }
         }
-        // Remove Configure ReportPortal stage since we're using environment variables
-        // Remove Verify Configuration stage
-        stage('Run Tests') {
+        stage('Configure ReportPortal') {
             steps {
                 withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
-                    withEnv([
-                        'RP_ENDPOINT=http://192.168.0.108:8081/api/v1',
-                        'RP_PROJECT=superadmin_personal',
-                        'RP_LAUNCH=Playwright Test Run',
-                        'RP_DESCRIPTION=Playwright tests',
-                        'RP_ATTRIBUTES=platform:jenkins',
-                        'RP_MODE=DEFAULT',
-                        'RP_DEBUG=true'
-                    ]) {
-                        sh 'echo "RP_API_KEY is set"'
-                        // Print non-sensitive environment variables
-                        sh 'env | grep RP_ | grep -v RP_API_KEY || true'
-                        // Run the tests
-                        sh '''
-                        set -e
-                        npx mocha --reporter @reportportal/agent-js-mocha test/loginTest.js
-                        '''
+                    script {
+                        def configContent = """{
+      "apiKey": "${RP_API_KEY}",
+      "endpoint": "http://192.168.0.108:8081/api/v1",
+      "project": "superadmin_personal",
+      "launch": "Playwright Test Run",
+      "description": "Playwright tests",
+      "attributes": [
+        {
+          "key": "platform",
+          "value": "jenkins"
+        }
+      ],
+      "mode": "DEFAULT",
+      "debug": true
+    }"""
+                        writeFile file: 'reportportal.conf.json', text: configContent
                     }
                 }
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh '''
+                set -e
+                npx mocha --reporter @reportportal/agent-js-mocha test/loginTest.js
+                '''
             }
         }
     }
@@ -52,13 +58,13 @@ pipeline {
         success {
             slackSend(
                 color: '#36a64f',
-                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\nSee details: ${env.BUILD_URL}"
+                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.\\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\\nSee details: ${env.BUILD_URL}"
             )
         }
         failure {
             slackSend(
                 color: '#FF0000',
-                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\nSee details: ${env.BUILD_URL}"
+                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.\\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\\nSee details: ${env.BUILD_URL}"
             )
         }
     }
