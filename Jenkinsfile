@@ -43,7 +43,7 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
+                withCredentials([string(credentialsId: 'alex-rp-api-key', variable: 'RP_API_KEY')]) {
                     sh 'echo "RP_API_KEY is set"'
                     // Print non-sensitive environment variables
                     sh 'env | grep RP_ | grep -v RP_API_KEY || true'
