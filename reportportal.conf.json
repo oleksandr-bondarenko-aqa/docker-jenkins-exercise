@@ -1,8 +1,8 @@
 {
-  "token": "${REPORT_PORTAL_TOKEN}",
   "endpoint": "http://192.168.0.108:8081/api/v1",
-  "launch": "Playwright Test Run",
   "project": "docker-jenkins-exercise",
+  "apiKey": "${RP_API_KEY}",
+  "launch": "Playwright Test Run",
   "description": "Playwright tests",
   "attributes": [
     {
