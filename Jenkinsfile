@@ -39,8 +39,11 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                // Inject the API key as an environment variable
-                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_TOKEN')]) {
+                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
+                    // Verify that RP_API_KEY is set (do not print its value)
+                    sh 'echo "RP_API_KEY is set"'
+                    // Print non-sensitive environment variables
+                    sh 'env | grep RP_ | grep -v RP_API_KEY'
                     sh 'npx mocha --reporter @reportportal/agent-js-mocha --reporter-options configFile=./reportportal.conf.json test/loginTest.js'
                 }
             }
