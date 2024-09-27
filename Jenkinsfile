@@ -6,7 +6,7 @@ pipeline {
     environment {
             RP_ENDPOINT = 'http://192.168.0.108:8081/api/v1'
             RP_PROJECT = 'docker-jenkins-exercise'
-            RP_TOKEN = credentials('alex-rp-api-key_Di3xvfVHRXSbKgHv6tIQkcraivi_HXI9RfObVp7WYmYsVZr_mrNxCC5ou_JRM1ci')
+            RP_TOKEN = credentials('reportportal-token')
         }
     stages {
         stage('Checkout') {
@@ -32,8 +32,12 @@ pipeline {
     }
     post {
             always {
-                cleanWs()
-            }
+                    script {
+                        node {
+                            cleanWs()
+                        }
+                    }
+                }
             success {
                         slackSend(
                             color: '#36a64f',
