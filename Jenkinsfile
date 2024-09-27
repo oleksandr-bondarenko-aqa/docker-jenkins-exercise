@@ -52,7 +52,7 @@ pipeline {
                     set -e
                     CONFIG_FILE="$(pwd)/reportportal.conf.json"
                     npx mocha --reporter @reportportal/agent-js-mocha --reporter-options \
-                    "configFile=\\"$CONFIG_FILE\\",apiKey=${RP_API_KEY}" test/loginTest.js
+                    'configFile="'"$CONFIG_FILE"'",apiKey='"$RP_API_KEY"'' test/loginTest.js
                     '''
                 }
             }
