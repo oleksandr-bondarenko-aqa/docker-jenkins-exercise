@@ -32,7 +32,7 @@ pipeline {
     }
   ],
   "mode": "DEFAULT",
-  "debug": false
+  "debug": true
 }'''
             }
         }
@@ -45,17 +45,12 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
                     sh 'echo "RP_API_KEY is set"'
-                    sh 'env | grep RP_ | grep -v RP_API_KEY'
-                    // Pass configuration options directly
+                    // Print non-sensitive environment variables
+                    sh 'env | grep RP_ | grep -v RP_API_KEY || true'
+                    // Run the tests
                     sh '''
                     npx mocha --reporter @reportportal/agent-js-mocha --reporter-options \
-                    "endpoint=http://192.168.0.108:8081/api/v1,\
-                    project=superadmin_personal,\
-                    token=${RP_API_KEY},\
-                    launch=Playwright Test Run,\
-                    description='Playwright tests',\
-                    mode=DEFAULT,\
-                    debug=false" test/loginTest.js || exit 1
+                    "configFile=./reportportal.conf.json" test/loginTest.js || exit 1
                     '''
                 }
             }
