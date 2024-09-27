@@ -23,7 +23,7 @@ pipeline {
                 // Create the configuration file without the API key
                 writeFile file: 'reportportal.conf.json', text: '''{
   "endpoint": "http://192.168.0.108:8081/api/v1",
-  "project": "docker-jenkins-exercise",
+  "project": "superadmin_personal",
   "launch": "Playwright Test Run",
   "description": "Playwright tests",
   "attributes": [
