@@ -18,42 +18,29 @@ pipeline {
                 sh 'npx playwright install'
             }
         }
-        stage('Configure ReportPortal') {
-            steps {
-                writeFile file: 'reportportal.conf.json', text: '''{
-  "endpoint": "http://192.168.0.108:8081/api/v1",
-  "project": "superadmin_personal",
-  "launch": "Playwright Test Run",
-  "description": "Playwright tests",
-  "attributes": [
-    {
-      "key": "platform",
-      "value": "jenkins"
-    }
-  ],
-  "mode": "DEFAULT",
-  "debug": true
-}'''
-            }
-        }
-        stage('Verify Configuration') {
-            steps {
-                sh 'cat reportportal.conf.json'
-            }
-        }
+        // Remove Configure ReportPortal stage since we're using environment variables
+        // Remove Verify Configuration stage
         stage('Run Tests') {
             steps {
                 withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
-                    sh 'echo "RP_API_KEY is set"'
-                    // Print non-sensitive environment variables
-                    sh 'env | grep RP_ | grep -v RP_API_KEY || true'
-                    // Run the tests with properly quoted path
-                    sh '''
-                    set -e
-                    CONFIG_FILE="$(pwd)/reportportal.conf.json"
-                    npx mocha --reporter @reportportal/agent-js-mocha --reporter-options \
-                    'configFile="'"$CONFIG_FILE"'",apiKey='"$RP_API_KEY"'' test/loginTest.js
-                    '''
+                    withEnv([
+                        'RP_ENDPOINT=http://192.168.0.108:8081/api/v1',
+                        'RP_PROJECT=superadmin_personal',
+                        'RP_LAUNCH=Playwright Test Run',
+                        'RP_DESCRIPTION=Playwright tests',
+                        'RP_ATTRIBUTES=platform:jenkins',
+                        'RP_MODE=DEFAULT',
+                        'RP_DEBUG=true'
+                    ]) {
+                        sh 'echo "RP_API_KEY is set"'
+                        // Print non-sensitive environment variables
+                        sh 'env | grep RP_ | grep -v RP_API_KEY || true'
+                        // Run the tests
+                        sh '''
+                        set -e
+                        npx mocha --reporter @reportportal/agent-js-mocha test/loginTest.js
+                        '''
+                    }
                 }
             }
         }
