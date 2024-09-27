@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'Node_22' // Use a stable NodeJS version
+        nodejs 'Node_22'
     }
     stages {
         stage('Checkout') {
@@ -20,12 +20,10 @@ pipeline {
         }
         stage('Configure ReportPortal') {
             steps {
-                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
-                    writeFile file: 'reportportal.conf.json', text: """
-{
+                // Create the configuration file without the API key
+                writeFile file: 'reportportal.conf.json', text: '''{
   "endpoint": "http://192.168.0.108:8081/api/v1",
   "project": "docker-jenkins-exercise",
-  "apiKey": "${RP_API_KEY}",
   "launch": "Playwright Test Run",
   "description": "Playwright tests",
   "attributes": [
@@ -36,14 +34,15 @@ pipeline {
   ],
   "mode": "DEFAULT",
   "debug": false
-}
-"""
-                }
+}'''
             }
         }
         stage('Run Tests') {
             steps {
-                sh 'npx mocha --reporter @reportportal/agent-js-mocha --reporter-options configFile=./reportportal.conf.json test/loginTest.js'
+                // Inject the API key as an environment variable
+                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_TOKEN')]) {
+                    sh 'npx mocha --reporter @reportportal/agent-js-mocha --reporter-options configFile=./reportportal.conf.json test/loginTest.js'
+                }
             }
         }
     }
