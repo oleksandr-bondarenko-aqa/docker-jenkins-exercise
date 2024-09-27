@@ -12,7 +12,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install playwright mocha @reportportal/agent-js-mocha'
+                sh 'npm install playwright mocha @reportportal/agent-js-mocha@5.0.3'
                 sh 'chmod +x ./node_modules/.bin/*'
                 sh 'npx playwright install-deps'
                 sh 'npx playwright install'
@@ -43,14 +43,15 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
-                    sh 'echo "RP_API_KEY is set"'
+                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_TOKEN')]) {
+                    sh 'echo "RP_TOKEN is set"'
                     // Print non-sensitive environment variables
-                    sh 'env | grep RP_ | grep -v RP_API_KEY || true'
-                    // Run the tests
+                    sh 'env | grep RP_ | grep -v RP_TOKEN || true'
+                    // Run the tests with set -e
                     sh '''
+                    set -e
                     npx mocha --reporter @reportportal/agent-js-mocha --reporter-options \
-                    "configFile=./reportportal.conf.json" test/loginTest.js || exit 1
+                    "configFile=./reportportal.conf.json,token=${RP_TOKEN}" test/loginTest.js
                     '''
                 }
             }
