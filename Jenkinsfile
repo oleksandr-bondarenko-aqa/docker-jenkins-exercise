@@ -12,7 +12,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install playwright mocha @reportportal/agent-js-mocha'
+                // Use the latest available version or specify a valid version
+                sh 'npm install playwright mocha @reportportal/agent-js-mocha@5.0.4'
                 sh 'chmod +x ./node_modules/.bin/*'
                 sh 'npx playwright install-deps'
                 sh 'npx playwright install'
@@ -22,22 +23,19 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
                     script {
-                        def configContent = """{
-      "apiKey": "${RP_API_KEY}",
-      "endpoint": "http://192.168.0.108:8081/api/v1",
-      "project": "superadmin_personal",
-      "launch": "Playwright Test Run",
-      "description": "Playwright tests",
-      "attributes": [
-        {
-          "key": "platform",
-          "value": "jenkins"
-        }
-      ],
-      "mode": "DEFAULT",
-      "debug": true
-    }"""
-                        writeFile file: 'reportportal.conf.json', text: configContent
+                        def config = [
+                            apiKey: RP_API_KEY,
+                            endpoint: 'http://192.168.0.108:8081/api/v1',
+                            project: 'superadmin_personal',
+                            launch: 'Playwright Test Run',
+                            description: 'Playwright tests',
+                            attributes: [
+                                [key: 'platform', value: 'jenkins']
+                            ],
+                            mode: 'DEFAULT',
+                            debug: true
+                        ]
+                        writeJSON file: 'reportportal.conf.json', json: config
                     }
                 }
             }
