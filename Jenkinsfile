@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'Node_18' // Use a stable NodeJS version
+        nodejs 'Node_22' // Use a stable NodeJS version
     }
     stages {
         stage('Checkout') {
