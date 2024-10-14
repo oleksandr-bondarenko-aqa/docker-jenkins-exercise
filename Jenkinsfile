@@ -6,7 +6,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-exercise.git'
+                script {
+                    git url: 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-exercise.git',
+                        credentialsId: 'github-pat',
+                        branch: 'master'
+                }
             }
         }
         stage('Install Dependencies') {
