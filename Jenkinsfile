@@ -48,13 +48,13 @@ pipeline {
         success {
             slackSend(
                 color: '#36a64f',
-                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.\\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\\nSee details: ${env.BUILD_URL}"
+                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.ReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all See details: ${env.BUILD_URL}"
             )
         }
         failure {
             slackSend(
                 color: '#FF0000',
-                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.\\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\\nSee details: ${env.BUILD_URL}"
+                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.ReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all See details: ${env.BUILD_URL}"
             )
         }
     }
