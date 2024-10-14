@@ -6,25 +6,33 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-excersise.git'
+                git 'https://github.com/oleksandr-bondarenko-aqa/docker-jenkins-exercise.git'
             }
         }
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install playwright mocha'
-                sh 'chmod +x ./node_modules/.bin/*'
+                sh 'npm install @reportportal/agent-js-mocha@5.0.3'
+                sh 'npm install playwright mocha chai'
                 sh 'npx playwright install-deps'
                 sh 'npx playwright install'
             }
         }
         stage('Run Tests') {
             steps {
-                withEnv(['REPORT=true']) {
-                    sh '''
-                    set -e
-                    npx mocha test/loginTest.js
-                    '''
+                withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
+                    withEnv([
+                        'RP_ENDPOINT=http://192.168.0.108:8081/api/v1',
+                        'RP_PROJECT=superadmin_personal',
+                        'RP_LAUNCH=Playwright Test Run',
+                        'RP_DESCRIPTION=Playwright tests',
+                        'RP_PLATFORM=jenkins'
+                    ]) {
+                        sh '''
+                        set -e
+                        node runTests.js
+                        '''
+                    }
                 }
             }
         }
@@ -36,13 +44,13 @@ pipeline {
         success {
             slackSend(
                 color: '#36a64f',
-                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.See details: ${env.BUILD_URL}"
+                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.\\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\\nSee details: ${env.BUILD_URL}"
             )
         }
         failure {
             slackSend(
                 color: '#FF0000',
-                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.See details: ${env.BUILD_URL}"
+                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.\\nReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all\\nSee details: ${env.BUILD_URL}"
             )
         }
     }

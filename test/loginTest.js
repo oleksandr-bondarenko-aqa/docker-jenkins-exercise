@@ -7,7 +7,7 @@ describe('Login Page Test', function() {
 
     this.timeout(10000);
 
-    before(async () => {
+    before(async function() {
         browser = await chromium.launch({ headless: true });
         const context = await browser.newContext();
         page = await context.newPage();
@@ -32,16 +32,15 @@ describe('Login Page Test', function() {
         expect(successMessage).to.include('Logged In Successfully');
     });
 
-    // it('Fail test', async function() {
+    // it('Should fail to log in with invalid credentials', async function() {
     //     await page.goto('https://practicetestautomation.com/practice-test-login/');
     //
-    //     await page.fill('#username', 'studentt');
-    //     await page.fill('#password', 'Password123');
+    //     await page.fill('#username', 'invalid_user');
+    //     await page.fill('#password', 'invalid_pass');
     //
     //     await page.click('#submit');
     //
-    //     await page.waitForSelector('.post-title');
-    //     const successMessage = await page.textContent('.post-title');
-    //     expect(successMessage).to.include('Logged In Successfully');
+    //     const errorMessage = await page.textContent('.error');
+    //     expect(errorMessage).to.include('Your username is invalid!');
     // });
 });
