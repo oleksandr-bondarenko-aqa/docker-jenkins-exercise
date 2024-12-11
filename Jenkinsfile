@@ -26,7 +26,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
                     withEnv([
-                        'RP_ENDPOINT=http://192.168.0.108:8081/api/v1',
+                        'RP_ENDPOINT=http://localhost:8081/api/v1',
                         'RP_PROJECT=superadmin_personal',
                         'RP_LAUNCH=Playwright Test Run',
                         'RP_DESCRIPTION=Playwright tests',
@@ -48,13 +48,13 @@ pipeline {
         success {
             slackSend(
                 color: '#36a64f',
-                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.ReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all See details: ${env.BUILD_URL}"
+                message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.ReportPortal: http://localhost:8081/ui/#superadmin_personal/launches/all See details: ${env.BUILD_URL}"
             )
         }
         failure {
             slackSend(
                 color: '#FF0000',
-                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.ReportPortal: http://192.168.0.108:8081/ui/#superadmin_personal/launches/all See details: ${env.BUILD_URL}"
+                message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.ReportPortal: http://localhost:8081/ui/#superadmin_personal/launches/all See details: ${env.BUILD_URL}"
             )
         }
     }
