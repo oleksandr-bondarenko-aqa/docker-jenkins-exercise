@@ -26,7 +26,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'reportportal-token', variable: 'RP_API_KEY')]) {
                     withEnv([
-                        'RP_ENDPOINT=http://localhost:8081/api/v1',
+                        'RP_ENDPOINT=http://reportportal:8081/api/v1',
                         'RP_PROJECT=superadmin_personal',
                         'RP_LAUNCH=Playwright Test Run',
                         'RP_DESCRIPTION=Playwright tests',
