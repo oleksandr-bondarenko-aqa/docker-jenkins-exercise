@@ -8,7 +8,9 @@ describe('Login Page Test', function() {
     this.timeout(10000);
 
     before(async function() {
-        browser = await chromium.launch({ headless: true });
+        browser = await chromium.connect({
+            wsEndpoint: 'ws://host.docker.internal:4444/playwright/chromium?headless=false&enableVNC=true&screenResolution=1920x1080x24',
+        });
         const context = await browser.newContext();
         page = await context.newPage();
     });
